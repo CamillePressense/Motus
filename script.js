@@ -14,7 +14,7 @@ document.addEventListener("keydown", event =>{
 // Function called by click : checks the user's proposition and displays the result
 function gamePlay(){  
     const WORD_TO_GUESS = "dictionnaire";
-    const PLAYER_WORD = WORD_INPUT.value;
+    const PLAYER_WORD = WORD_INPUT.value.toLowerCase();
     WORD_INPUT.value = "";
     WORD_PLAYER_TRY.textContent = `Mot proposé: ${PLAYER_WORD}`;
 
@@ -75,3 +75,5 @@ function compareWords(playerWord, wordToGuess){
     }
     return {WELL_PLACED, miss_placed, NOT_IN_WORD}
 }
+
+// TODO: fix jeu sensible à la casse.
