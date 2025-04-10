@@ -1,6 +1,15 @@
 const WORD_INPUT = document.querySelector("#playerWord");
 const WORD_PLAYER_TRY = document.querySelector("#playerTry");
 const WIN_MESSAGE = document.querySelector("#winMessage");
+const BUTTON = document.querySelector("#validationButton");
+
+BUTTON.addEventListener("click", gamePlay);
+
+document.addEventListener("keydown", event =>{
+    if (event.key === "Enter")
+    gamePlay()
+});
+
 
 // Function called by click : checks the user's proposition and displays the result
 function gamePlay(){  
