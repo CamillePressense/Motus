@@ -1,43 +1,68 @@
-function tryWord(word, base) {
-	// TODO: fix jeu sensible à la casse.
-	if (word === base) {
-		return true
-  } else {
-  	let wellPlaced = [];
-    let notInWord = [];
-    let missplaced = [];
-    
-  	let arrayBase = base.split('');
-    let arrayWord = word.split('');
-    
-		for (let i = 0; i < arrayBase.length-1; i++) {
-    	if (arrayBase[i] === arrayWord[i]) {
-      	wellPlaced.push(arrayWord[i]);
-      }	else {
-        missplaced.push(arrayWord[i])
-      }
-    }
-    
-    for (const char of arrayWord) {
-    	if (arrayBase.includes(char) === false) {
-      	notInWord.push(char)
-      }
-    }
-    
-    return { wellPlaced: wellPlaced, missplaced: missplaced, notInWord: notInWord }
-  }
+const WORD_INPUT = document.querySelector("#playerWord");
+const WORD_PLAYER_TRY = document.querySelector("#playerTry");
+const WIN_MESSAGE = document.querySelector("#winMessage");
+
+// Function called by click : checks the user's proposition and displays the result
+function gamePlay(){  
+    const WORD_TO_GUESS = "dictionnaire";
+    const PLAYER_WORD = WORD_INPUT.value;
+    WORD_INPUT.value = "";
+    WORD_PLAYER_TRY.textContent = `Mot proposé: ${PLAYER_WORD}`;
+
+    if (PLAYER_WORD === WORD_TO_GUESS)
+        WIN_MESSAGE.textContent = "MO MO MOTUS ! Bravo, tu as trouvé !";
+
+    const {WELL_PLACED} = compareWords(PLAYER_WORD, WORD_TO_GUESS);
+    document.querySelector("#well").textContent = `Bien placé: ${WELL_PLACED}`;
+
+    const{miss_placed} = compareWords(PLAYER_WORD, WORD_TO_GUESS);
+    document.querySelector("#miss").textContent = `Mal placé: ${miss_placed}`;
+
+    const{NOT_IN_WORD} = compareWords(PLAYER_WORD, WORD_TO_GUESS);
+    document.querySelector("#notInWord").textContent = `Pas dans le mot: ${NOT_IN_WORD}`;
+}
+ 
+function getWellPlaced (playerWord, wordToGuess){
+    const playerArray = splitWordInArray(playerWord);
+    const arrayToGuess = splitWordInArray(wordToGuess);
+    let wellPlaced = [];
+
+    for (let i = 0; i <= arrayToGuess.length-1; i++) {
+    	if (arrayToGuess[i] === playerArray[i]) {
+            wellPlaced.push(playerArray[i]);
+        }
+    } 
+    return wellPlaced;
 }
 
-function guess() {
-	let base = 'dictionnaire'
-	let word = document.getElementById("word").value
-	let result = tryWord(word, base)
-  document.getElementById("word").value = ''
- 	document.getElementById("try").innerText = word
-  document.getElementById("well").innerText = 'Bien placé: '+result.wellPlaced.join(', ')
-  document.getElementById("miss").innerText = 'Mal placé: '+result.missplaced.join(', ')
-  document.getElementById("not").innerText = 'Pas dans le mot: '+result.notInWord.join(', ')
-  if (result.wellPlaced.length === base.length) {
-	  document.getElementById("win").innerText = 'Vous avez gagné'
-  }
+function getNotInWordAndInWord (playerWord, wordToGuess){
+    const playerArray = splitWordInArray(playerWord);
+    const arrayToGuess = splitWordInArray(wordToGuess);
+    let notInWord = [];
+    let inWord = [];
+
+    for (const char of playerArray) {
+    	if (arrayToGuess.includes(char) === false) 
+      	notInWord.push(char);
+        else 
+        inWord.push(char);
+    }
+    return {notInWord, inWord};
+}
+
+function splitWordInArray(word){
+    return word.split("");
+}
+
+function compareWords(playerWord, wordToGuess){
+    const WELL_PLACED = getWellPlaced(playerWord, wordToGuess);
+    const {notInWord: NOT_IN_WORD} = getNotInWordAndInWord(playerWord, wordToGuess);
+    const {inWord : IN_WORD} = getNotInWordAndInWord(playerWord, wordToGuess);
+
+    let miss_placed = [];
+    for (const char of IN_WORD){
+        if(WELL_PLACED.includes(char) === false)
+            miss_placed.push(char);
+    }
+    return {WELL_PLACED, miss_placed, NOT_IN_WORD}
 }
